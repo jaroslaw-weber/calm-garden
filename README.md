@@ -1,70 +1,52 @@
-# Getting Started with Create React App
+# 🌬️ Box Breathing Visualizer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🔍 Overview
 
-## Available Scripts
+This project is a frontend visualization tool for the [CLI Box Breathing](https://github.com/jaroslaw-weber/cli-box-breathing) application. It enhances the experience of practicing box breathing by providing a visual interface to complement the CLI tool.
 
-In the project directory, you can run:
+Box breathing is a powerful relaxation technique that can help reduce stress, improve focus, and promote overall well-being. This application makes the practice more engaging by visualizing the breathing process and incorporating a virtual garden that grows as you practice.
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- 📊 Visual representation of the box breathing technique
+- 🔄 Synchronization with the CLI Box Breathing tool
+- 🌱 Virtual garden that grows as you practice
+- 🎨 Discreet and customizable interface
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Getting Started
 
-### `npm test`
+To use the Box Breathing Visualizer, simply visit our GitHub Pages:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+[🌐 Box Breathing Visualizer](https://jaroslaw-weber.github.io/calm-garden/)
 
-### `npm run build`
+No installation or setup required! Just open the link in your web browser and start your breathing practice.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🎮 Usage
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Visit the [Box Breathing Visualizer](https://jaroslaw-weber.github.io/calm-garden/) in your web browser.
+2. The visual interface will guide you through the box breathing exercise.
+3. Follow the on-screen instructions for inhaling, holding, exhaling, and holding again.
+4. Watch your virtual garden grow as you continue your practice! 🌻
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📚 Learn More
 
-### `npm run eject`
+To learn more about box breathing and its benefits, visit [the CLI Box Breathing repository](https://github.com/jaroslaw-weber/cli-box-breathing).
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+For those interested in the technical aspects:
+- This project was built with React. To learn more about React, check out the [React documentation](https://reactjs.org/).
+- The project is hosted on GitHub Pages. Learn more about [GitHub Pages](https://pages.github.com/).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🤝 Contributing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📄 License
 
-## Learn More
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🙏 Acknowledgments
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Thanks to [Jaroslaw Weber](https://github.com/jaroslaw-weber) for creating the original CLI Box Breathing tool.
+- This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Enjoy your peaceful breathing practice with the Box Breathing Visualizer! 🧘‍♀️🧘‍♂️
