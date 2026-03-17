@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ImageGrid from './ImageGrid';
-import { type GardenCell, AVAILABLE_PLANTS, GROWTH_COST, MAX_STAGE, encodeGardenSetup } from '../garden';
+import { type GardenCell, AVAILABLE_PLANTS, GROWTH_COST, MAX_STAGE, encodeGardenSetup, decodeGardenSetup } from '../garden';
 
 interface GardenEditorProps {
   points: number;
@@ -19,9 +19,29 @@ export function GardenEditor({ points, onSpendPoints }: GardenEditorProps) {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [showExport, setShowExport] = useState(false);
   const [exportUrl, setExportUrl] = useState('');
+  const [isSharedView, setIsSharedView] = useState(false);
 
-  // Load garden from localStorage on mount
+  // Load garden from localStorage or URL on mount
   useEffect(() => {
+    // First check URL for shared garden
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedData = urlParams.get('data');
+    
+    if (sharedData) {
+      try {
+        const decodedGarden = decodeGardenSetup(sharedData);
+        // Ensure it's 5x5 grid
+        if (decodedGarden.length > 0 && decodedGarden[0].length > 0) {
+          setGarden(decodedGarden);
+          setIsSharedView(true);
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to decode shared garden:', e);
+      }
+    }
+    
+    // Otherwise load from localStorage
     const saved = localStorage.getItem('calm-garden-data');
     if (saved) {
       try {
@@ -35,13 +55,15 @@ export function GardenEditor({ points, onSpendPoints }: GardenEditorProps) {
     }
   }, []);
 
-  // Save garden to localStorage whenever it changes
+  // Save garden to localStorage whenever it changes (only if not shared view)
   useEffect(() => {
-    localStorage.setItem('calm-garden-data', JSON.stringify({ garden }));
-  }, [garden]);
+    if (!isSharedView) {
+      localStorage.setItem('calm-garden-data', JSON.stringify({ garden }));
+    }
+  }, [garden, isSharedView]);
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
-    if (!selectedTool) return;
+    if (!selectedTool || isSharedView) return;
 
     const cell = garden[rowIndex][colIndex];
     const plant = AVAILABLE_PLANTS.find(p => p.type === selectedTool);
@@ -85,6 +107,12 @@ export function GardenEditor({ points, onSpendPoints }: GardenEditorProps) {
     alert('URL copied to clipboard!');
   };
 
+  const handleClaimGarden = () => {
+    setIsSharedView(false);
+    localStorage.setItem('calm-garden-data', JSON.stringify({ garden }));
+    alert('Garden saved to your collection! 🌱');
+  };
+
   // Convert garden data to image URLs
   const gardenImages = garden.map((row) =>
     row.map((cell) => {
@@ -99,41 +127,58 @@ export function GardenEditor({ points, onSpendPoints }: GardenEditorProps) {
     <div className="flex flex-col items-center p-6 bg-green-50 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-green-800 mb-4">Your Garden</h2>
       
+      {/* Shared garden banner */}
+      {isSharedView && (
+        <div className="mb-4 p-4 bg-blue-100 border border-blue-300 rounded-lg text-center">
+          <p className="text-blue-800 font-semibold mb-2">🎁 You're viewing a shared garden!</p>
+          <button
+            onClick={handleClaimGarden}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+          >
+            Claim This Garden
+          </button>
+        </div>
+      )}
+      
       {/* Points display */}
-      <div className="mb-4 px-6 py-2 bg-yellow-100 rounded-full">
-        <span className="text-xl font-bold text-yellow-800">
-          ⭐ Points: {points}
-        </span>
-      </div>
+      {!isSharedView && (
+        <div className="mb-4 px-6 py-2 bg-yellow-100 rounded-full">
+          <span className="text-xl font-bold text-yellow-800">
+            ⭐ Points: {points}
+          </span>
+        </div>
+      )}
 
       {/* Tool selection */}
-      <div className="mb-6">
-        <p className="text-green-700 mb-2 font-semibold">Select a plant to place:</p>
-        <div className="flex flex-wrap gap-2 justify-center">
-          {AVAILABLE_PLANTS.map((plant) => (
-            <button
-              key={plant.type}
-              onClick={() => setSelectedTool(selectedTool === plant.type ? null : plant.type)}
-              disabled={points < plant.cost}
-              className={`
-                px-4 py-2 rounded-lg border-2 font-medium transition-all
-                ${selectedTool === plant.type
-                  ? 'border-green-600 bg-green-200 text-green-900'
-                  : points >= plant.cost
-                    ? 'border-green-400 bg-white text-green-700 hover:bg-green-50'
-                    : 'border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed'
-                }
-              `}
-            >
-              <span className="mr-2">{plant.emoji}</span>
-              {plant.name} ({plant.cost} pts)
-            </button>
-          ))}
+      {!isSharedView && (
+        <div className="mb-6">
+          <p className="text-green-700 mb-2 font-semibold">Select a plant to place:</p>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {AVAILABLE_PLANTS.map((plant) => (
+              <button
+                key={plant.type}
+                onClick={() => setSelectedTool(selectedTool === plant.type ? null : plant.type)}
+                disabled={points < plant.cost}
+                className={`
+                  px-4 py-2 rounded-lg border-2 font-medium transition-all
+                  ${selectedTool === plant.type
+                    ? 'border-green-600 bg-green-200 text-green-900'
+                    : points >= plant.cost
+                      ? 'border-green-400 bg-white text-green-700 hover:bg-green-50'
+                      : 'border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }
+                `}
+              >
+                <span className="mr-2">{plant.emoji}</span>
+                {plant.name} ({plant.cost} pts)
+              </button>
+            ))}
+          </div>
+          <p className="text-sm text-green-600 mt-2 text-center">
+            Click a cell to plant. Click same plant again to upgrade (+{GROWTH_COST} pts).
+          </p>
         </div>
-        <p className="text-sm text-green-600 mt-2 text-center">
-          Click a cell to plant. Click same plant again to upgrade (+{GROWTH_COST} pts).
-        </p>
-      </div>
+      )}
 
       {/* Garden Grid */}
       <div className="w-full max-w-lg aspect-square mb-6">
@@ -151,7 +196,7 @@ export function GardenEditor({ points, onSpendPoints }: GardenEditorProps) {
                 onClick={() => handleCellClick(rowIndex, colIndex)}
                 className={`
                   relative rounded-lg border-2 transition-all
-                  ${selectedTool 
+                  ${selectedTool && !isSharedView
                     ? 'cursor-pointer hover:border-green-500' 
                     : 'cursor-default'
                   }
@@ -160,7 +205,7 @@ export function GardenEditor({ points, onSpendPoints }: GardenEditorProps) {
                     : 'bg-amber-100 border-amber-300'
                   }
                 `}
-                disabled={!selectedTool}
+                disabled={!selectedTool || isSharedView}
               >
                 {cell.plant ? (
                   <div className="absolute inset-0 flex items-center justify-center text-3xl">
@@ -181,12 +226,14 @@ export function GardenEditor({ points, onSpendPoints }: GardenEditorProps) {
       </div>
 
       {/* Export button */}
-      <button
-        onClick={handleExport}
-        className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
-      >
-        🔗 Share Garden
-      </button>
+      {!isSharedView && (
+        <button
+          onClick={handleExport}
+          className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+        >
+          🔗 Share Garden
+        </button>
+      )}
 
       {/* Export modal */}
       {showExport && (

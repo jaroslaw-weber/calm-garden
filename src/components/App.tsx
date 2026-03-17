@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { BreathingExercise } from './BreathingExercise';
 import { GardenEditor } from './GardenEditor';
 import { Attributions } from './Attributions';
+import { AntiCheatManager } from './AntiCheat';
 
 type ViewMode = 'welcome' | 'breathing' | 'garden';
 
-const POINTS_PER_CYCLE = 10;
-
 export function App() {
   const [points, setPoints] = useState(0);
+  const [sessionPoints, setSessionPoints] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('welcome');
+  const [isBreathingActive, setIsBreathingActive] = useState(false);
 
   // Load points from localStorage
   useEffect(() => {
@@ -24,8 +25,9 @@ export function App() {
     localStorage.setItem('calm-garden-points', points.toString());
   }, [points]);
 
-  const handleCycleComplete = () => {
-    setPoints(prev => prev + POINTS_PER_CYCLE);
+  const handlePointsEarned = (amount: number) => {
+    setPoints(prev => prev + amount);
+    setSessionPoints(prev => prev + amount);
   };
 
   const handleSpendPoints = (amount: number): boolean => {
@@ -36,8 +38,30 @@ export function App() {
     return false;
   };
 
+  const handleResetSessionPoints = () => {
+    // Remove session points from total
+    setPoints(prev => Math.max(0, prev - sessionPoints));
+    setSessionPoints(0);
+    alert('You were away too long. Session coins have been reset to prevent cheating. Please practice mindfully! 🧘');
+  };
+
+  const handleBreathingStateChange = (isActive: boolean) => {
+    setIsBreathingActive(isActive);
+    if (!isActive) {
+      // Reset session points when stopping
+      setSessionPoints(0);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50">
+      {/* Anti-cheat system - only active during breathing */}
+      <AntiCheatManager
+        isActive={isBreathingActive}
+        onPointsReset={handleResetSessionPoints}
+        sessionPoints={sessionPoints}
+      />
+
       {/* Header */}
       <header className="bg-white shadow-sm p-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -101,7 +125,7 @@ export function App() {
             
             <p className="text-xl text-gray-600 mb-8 max-w-2xl">
               Practice box breathing to collect coins and grow your own peaceful garden. 
-              Each breathing cycle earns you 10 coins to spend on plants!
+              Earn 1 coin per second while breathing mindfully!
             </p>
             
             <div className="flex flex-col items-center gap-4">
@@ -131,7 +155,7 @@ export function App() {
               <div className="p-4">
                 <div className="text-4xl mb-2">⭐</div>
                 <p className="font-semibold text-gray-700">Earn</p>
-                <p className="text-sm text-gray-500">Collect 10 coins per cycle</p>
+                <p className="text-sm text-gray-500">Collect 1 coin per second</p>
               </div>
               <div className="p-4">
                 <div className="text-4xl mb-2">🌸</div>
@@ -144,18 +168,19 @@ export function App() {
 
         {viewMode === 'breathing' && (
           <div className="max-w-2xl mx-auto">
-            <BreathingExercise onCycleComplete={handleCycleComplete} />
+            <BreathingExercise 
+              onPointsEarned={handlePointsEarned}
+              onStateChange={handleBreathingStateChange}
+            />
             
-            {points > 0 && (
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => setViewMode('garden')}
-                  className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full transition-colors"
-                >
-                  Spend Your {points} Coins in the Garden 🌱
-                </button>
-              </div>
-            )}
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setViewMode('garden')}
+                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full transition-colors"
+              >
+                Spend Your {points} Coins in the Garden 🌱
+              </button>
+            </div>
           </div>
         )}
 
