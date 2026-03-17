@@ -3,6 +3,7 @@ import { BreathingExercise } from './BreathingExercise';
 import { GardenEditor } from './GardenEditor';
 import { Attributions } from './Attributions';
 import { AntiCheatManager } from './AntiCheat';
+import { Tutorial } from './Tutorial';
 
 type ViewMode = 'welcome' | 'breathing' | 'garden';
 
@@ -11,12 +12,19 @@ export function App() {
   const [sessionPoints, setSessionPoints] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('welcome');
   const [isBreathingActive, setIsBreathingActive] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
-  // Load points from localStorage
+  // Load points from localStorage and check if tutorial was completed
   useEffect(() => {
     const saved = localStorage.getItem('calm-garden-points');
     if (saved) {
       setPoints(parseInt(saved, 10));
+    }
+    
+    // Show tutorial if not completed
+    const tutorialCompleted = localStorage.getItem('calm-garden-tutorial-completed');
+    if (!tutorialCompleted) {
+      setShowTutorial(true);
     }
   }, []);
 
@@ -42,7 +50,7 @@ export function App() {
     // Remove session points from total
     setPoints(prev => Math.max(0, prev - sessionPoints));
     setSessionPoints(0);
-    alert('You were away too long. Session coins have been reset to prevent cheating. Please practice mindfully! 🧘');
+    alert('You were away too long. Session coins have been reset to prevent cheating. Please practice mindfully! 🌸');
   };
 
   const handleBreathingStateChange = (isActive: boolean) => {
@@ -55,6 +63,9 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-green-50">
+      {/* Tutorial */}
+      {showTutorial && <Tutorial onClose={() => setShowTutorial(false)} />}
+      
       {/* Anti-cheat system - only active during breathing */}
       <AntiCheatManager
         isActive={isBreathingActive}
@@ -116,7 +127,7 @@ export function App() {
         {viewMode === 'welcome' && (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
             <div className="mb-8">
-              <span className="text-8xl">🧘‍♀️</span>
+              <span className="text-8xl">🌳</span>
             </div>
             
             <h2 className="text-4xl font-bold text-gray-800 mb-4">
