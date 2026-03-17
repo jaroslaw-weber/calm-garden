@@ -1,5 +1,8 @@
-export function AttributionItem(p: { author: string }) {
-  const { author } = p;
+interface AttributionItemProps {
+  author: string;
+}
+
+export function AttributionItem({ author }: AttributionItemProps) {
   return (
     <a
       href={`https://www.flaticon.com/authors/${author}`}

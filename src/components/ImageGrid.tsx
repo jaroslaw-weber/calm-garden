@@ -1,6 +1,11 @@
 // src/components/ImageGrid.tsx
 import React from "react";
-const ImageGrid = ({ garden }: { garden: string[][] }) => {
+
+interface ImageGridProps {
+  garden: string[][];
+}
+
+const ImageGrid: React.FC<ImageGridProps> = ({ garden }) => {
   const columnCount = garden[0]?.length || 0;
   const rowCount = garden.length;
 
