@@ -197,7 +197,7 @@ export function App() {
 
         {viewMode === 'garden' && (
           <div className="max-w-4xl mx-auto">
-            <GardenEditor points={points} onSpendPoints={handleSpendPoints} />
+            <GardenEditor points={points} onSpendPoints={handleSpendPoints} onEarnPoints={handlePointsEarned} />
             
             <div className="mt-6 text-center">
               <button
